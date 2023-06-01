@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/mistik9/movies-explorer-api#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.1",
     "cookie-parser": "^1.4.6",
@@ -27,6 +28,7 @@
     "express": "^4.18.2",
     "express-winston": "^4.2.0",
     "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.2",
     "node": "^20.2.0",
     "nodemon": "^2.0.22",

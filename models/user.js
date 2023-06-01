@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const { RegExp } = require('../utils/constants');
 const { AuthError } = require('../utils/errors/index');
 
 mongoose.set('toJSON', { useProjection: true });
@@ -12,21 +11,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: [2, 'Имя не может быть короче 2 символов'],
     maxlength: [30, 'Имя не может быть длиннее 30 символов'],
-    default: 'Жак-Ив Кусто',
-  },
-  about: {
-    type: String,
-    minlength: [2, 'Наименование не может быть короче 2 символов'],
-    maxlength: [30, 'Наименование не может быть длиннее 30 символов'],
-    default: 'Исследователь',
-  },
-  avatar: {
-    type: String,
-    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: {
-      validator: (v) => RegExp.test(v),
-      message: 'Неправильный формат ссылки',
-    },
   },
   email: {
     type: String,
