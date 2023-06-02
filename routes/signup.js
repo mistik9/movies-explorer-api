@@ -8,6 +8,6 @@ signupRouter.post('/', celebrate({
     password: Joi.string().required().min(6),
     name: Joi.string().min(2).max(30),
   }),
-  }), createUser);
+}), createUser);
 
 module.exports = signupRouter;

@@ -13,7 +13,6 @@ const getMovies = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-
   const { _id } = req.params;
   Movie.findById(_id)
     .orFail(() => {
@@ -21,7 +20,6 @@ const deleteMovie = (req, res, next) => {
     })
     .then((movie) => {
       const { owner: movieOwnerId } = movie;
-      console.log(movie)
       if (movieOwnerId.valueOf() === req.user._id) {
         Movie.deleteOne()
           .then(() => {
@@ -42,12 +40,26 @@ const deleteMovie = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const { country, director, duration, year, description, image, trailerLink, nameRU, nameEN, thumbnail, movieId } = req.body;
+  const {
+    country, director, duration, year, description,
+    image, trailerLink, nameRU, nameEN, thumbnail, movieId,
+  } = req.body;
 
   const owner = req.user._id;
-
-
-  Movie.create({ country, director, duration, year, description, image, trailerLink, nameRU, nameEN, thumbnail, movieId, owner })
+  Movie.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    nameRU,
+    nameEN,
+    thumbnail,
+    movieId,
+    owner,
+  })
     .then((movie) => {
       res.status(OK).send(movie);
     })
@@ -59,7 +71,6 @@ const createMovie = (req, res, next) => {
       }
     });
 };
-
 
 module.exports = {
   getMovies,

@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
 const NotFoundError = require('./utils/errors/NotFoundError');
 const {
@@ -11,20 +11,20 @@ const {
 } = require('./routes');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
-// const { cors } = require('./middlewares/cors');
+const { cors } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
-const { PORT = 3000 } = process.env;
-const URL = 'mongodb://127.0.0.1:27017/moviesdb';
+const { PORT } = process.env;
+const { URL_DB } = process.env;
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
-
 app.use(cookieParser());
 
-// app.use(cors);
+app.use(cors);
 
-mongoose.connect(URL)
+mongoose.connect(URL_DB)
   .then(console.log('DB is connected'))
   .catch((err) => console.log(err));
 
@@ -38,7 +38,7 @@ app.use('/signup', signupRouter);
 app.use('/signin', signinRouter);
 
 app.use(auth);
-console.log(1)
+
 app.use('/users', userRouter);
 app.use('/movies', movieRouter);
 

@@ -3,9 +3,10 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { OK } = require('../utils/constants');
 const {
-  AuthError, BadRequestError, ConflictError, NotFoundError,
+  BadRequestError, ConflictError, NotFoundError,
 } = require('../utils/errors/index');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUserInfo = (req, res, next) => {
   const { _id } = req.user;
@@ -66,29 +67,31 @@ const updateUser = (req, res, next) => {
       res.status(OK).send(user);
     })
     .catch((err) => {
-      console.log(err)
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные '));
       } else {
         next(err);
-
       }
     });
 };
-
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-      res.send({token,
-        // {message: 'Пользователь авторизован'}
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
       });
-      next(new AuthError('Неправильные почта и пароль'));
+      res.send({ success: 'Пользователь авторизован' });
     })
     .catch(next);
+};
+
+const logout = (req, res) => {
+  res.clearCookie('jwt').send();
 };
 
 module.exports = {
@@ -96,4 +99,5 @@ module.exports = {
   createUser,
   updateUser,
   login,
+  logout,
 };
