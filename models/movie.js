@@ -30,7 +30,7 @@ const movieSchema = new mongoose.Schema({
       message: 'Неправильный формат ссылки',
     },
   },
-  trailerLink : {
+  trailerLink: {
     type: String,
     required: true,
     validate: {
@@ -51,15 +51,15 @@ const movieSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  movieId : {
+  movieId: {
     type: Number,
     required: true,
   },
-  nameRU : {
+  nameRU: {
     type: String,
     required: true,
   },
-  nameEN : {
+  nameEN: {
     type: String,
     required: true,
   },
