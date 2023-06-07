@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const NotFoundError = require('../utils/errors/NotFoundError');
+const { NOT_FOUND_MESSAGE } = require('../utils/constants')
 
 const userRouter = require('./user');
 const movieRouter = require('./movie');
@@ -14,5 +16,9 @@ router.use('/signout', signoutRouter);
 router.use(auth);
 router.use('/movies', movieRouter);
 router.use('/users', userRouter);
+
+router.use('*', (req, res, next) => {
+  next(new NotFoundError(NOT_FOUND_MESSAGE));
+});
 
 module.exports = router;
