@@ -5,6 +5,8 @@ const { OK } = require('../utils/constants');
 const {
   BadRequestError, ConflictError, NotFoundError,
 } = require('../utils/errors/index');
+const { DEV_KEY} = require('../utils/config')
+
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -69,6 +71,8 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Переданы некорректные данные '));
+      } else if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким электронным адресом уже зарегистрирован'));
       } else {
         next(err);
       }
@@ -80,7 +84,9 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : DEV_PORT,
+      DEV_DB,
+      DEV_KEY, { expiresIn: '7d' });
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
@@ -91,7 +97,7 @@ const login = (req, res, next) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie('jwt').send();
+  res.clearCookie('jwt').send({ success: 'Cookies удалены' });
 };
 
 module.exports = {

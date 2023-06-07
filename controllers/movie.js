@@ -7,7 +7,7 @@ const {
 } = require('../utils/errors/index');
 
 const getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .then((cards) => res.status(OK).send(cards))
     .catch(next);
 };

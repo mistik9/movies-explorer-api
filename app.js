@@ -12,9 +12,10 @@ const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
 const { cors } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { DEV_PORT, DEV_DB } = require('./utils/config')
 
-const { PORT } = process.env;
-const { URL_DB } = process.env;
+const { PORT, URL_DB } = process.env;
+
 
 const app = express();
 app.use(helmet());
@@ -24,7 +25,7 @@ app.use(cookieParser());
 
 app.use(cors);
 
-mongoose.connect(URL_DB);
+mongoose.connect(URL_DB || DEV_DB);
 
 app.get('/crash-test', () => {
   setTimeout(() => {
@@ -41,4 +42,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT);
+app.listen(PORT || DEV_PORT);

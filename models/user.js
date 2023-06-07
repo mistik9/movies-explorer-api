@@ -9,6 +9,7 @@ mongoose.set('toObject', { useProjection: true });
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
+    required: [true, 'Введите имя'],
     minlength: [2, 'Имя не может быть короче 2 символов'],
     maxlength: [30, 'Имя не может быть длиннее 30 символов'],
   },
