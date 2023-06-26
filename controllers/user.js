@@ -1,10 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { OK } = require('../utils/constants');
+const { OK, NOT_FOUND_USER_MESSAGE, BAD_DATA_USER_MESSAGE, CONFLICT_USER_MESSAGE, SIGNIN_MESSAGE, CLEAR_COOKIE_MESSAGE } = require('../utils/constants');
 const {
   BadRequestError, ConflictError, NotFoundError,
 } = require('../utils/errors/index');
+const { DEV_KEY} = require('../utils/config')
+
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -12,14 +14,14 @@ const getUserInfo = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail(() => {
-      throw new NotFoundError('Пользователь не найден');
+      throw new NotFoundError(NOT_FOUND_USER_MESSAGE);
     })
     .then((user) => {
-      res.send(user);
+      res.status(OK).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        next(new BadRequestError(BAD_DATA_USER_MESSAGE));
       } else {
         next(err);
       }
@@ -42,9 +44,9 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким электронным адресом уже зарегистрирован'));
+        next(new ConflictError(CONFLICT_USER_MESSAGE));
       } if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при регистрации пользователя'));
+        next(new BadRequestError(BAD_DATA_USER_MESSAGE));
       } else {
         next(err);
       }
@@ -61,14 +63,16 @@ const updateUser = (req, res, next) => {
   })
 
     .orFail(() => {
-      throw new NotFoundError('Пользователь не найден');
+      throw new NotFoundError(NOT_FOUND_USER_MESSAGE);
     })
     .then((user) => {
       res.status(OK).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные '));
+        next(new BadRequestError(BAD_DATA_USER_MESSAGE));
+      } else if (err.code === 11000) {
+        next(new ConflictError(CONFLICT_USER_MESSAGE));
       } else {
         next(err);
       }
@@ -80,18 +84,18 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : DEV_PORT, { expiresIn: '7d' });
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
       });
-      res.send({ success: 'Пользователь авторизован' });
+      res.send({ success: SIGNIN_MESSAGE });
     })
     .catch(next);
 };
 
 const logout = (req, res) => {
-  res.clearCookie('jwt').send();
+  res.clearCookie('jwt').send({ success: CLEAR_COOKIE_MESSAGE });
 };
 
 module.exports = {
