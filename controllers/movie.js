@@ -1,6 +1,6 @@
 const Movie = require('../models/movie');
 const {
-  OK, NOT_FOUND_MOVIE_MESSAGE, DEL_MOVIE_MESSAGE, FORBIDDEN_MOVIE_MESSAGE, BAD_DATA_MOVIE_MESSAGE
+  OK, NOT_FOUND_MOVIE_MESSAGE, DEL_MOVIE_MESSAGE, FORBIDDEN_MOVIE_MESSAGE, BAD_DATA_MOVIE_MESSAGE,
 } = require('../utils/constants');
 const {
   BadRequestError, NotFoundError, ForbiddenError,

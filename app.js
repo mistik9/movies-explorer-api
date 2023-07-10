@@ -10,9 +10,9 @@ const { cors } = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { DEV_PORT, DEV_DB } = require('./utils/config')
-const { PORT, URL_DB } = process.env;
+const { DEV_PORT, DEV_DB } = require('./utils/config');
 
+const { PORT, URL_DB } = process.env;
 
 const app = express();
 mongoose.connect(URL_DB || DEV_DB);
