@@ -1,5 +1,7 @@
 const allowedCors = [
   'http://localhost:3000',
+  'http://hollysht.nomoredomains.rocks',
+  'https://hollysht.nomoredomains.work',
 ];
 
 const cors = (req, res, next) => {
