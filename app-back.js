@@ -11,11 +11,11 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 
 const { DEV_PORT, DEV_DB } = require('./utils/config');
-
 const { PORT, URL_DB } = process.env;
 
 const app = express();
-mongoose.connect(URL_DB || DEV_DB);
+mongoose.connect(URL_DB || DEV_DB)
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
@@ -35,4 +35,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT || DEV_PORT);
+app.listen(PORT || DEV_PORT, () => {
+  console.log(`Server running at ${PORT || DEV_PORT}`)
+});
+
