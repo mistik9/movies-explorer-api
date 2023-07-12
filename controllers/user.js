@@ -1,12 +1,14 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { OK, NOT_FOUND_USER_MESSAGE, BAD_DATA_USER_MESSAGE, CONFLICT_USER_MESSAGE, SIGNIN_MESSAGE, CLEAR_COOKIE_MESSAGE } = require('../utils/constants');
+const {
+  OK, NOT_FOUND_USER_MESSAGE, BAD_DATA_USER_MESSAGE,
+  CONFLICT_USER_MESSAGE, SIGNIN_MESSAGE, CLEAR_COOKIE_MESSAGE,
+} = require('../utils/constants');
 const {
   BadRequestError, ConflictError, NotFoundError,
 } = require('../utils/errors/index');
-const { DEV_KEY} = require('../utils/config')
-
+const { DEV_KEY } = require('../utils/config');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -84,9 +86,8 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user)
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : DEV_KEY, { expiresIn: '7d' });
-      
+
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,

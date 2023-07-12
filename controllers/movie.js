@@ -21,7 +21,7 @@ const deleteMovie = (req, res, next) => {
     .then((movie) => {
       const { owner: movieOwnerId } = movie;
       if (movieOwnerId.valueOf() === req.user._id) {
-        Movie.deleteOne()
+        movie.deleteOne()
           .then(() => {
             res.status(OK).send({ message: DEL_MOVIE_MESSAGE });
           })
@@ -42,7 +42,7 @@ const deleteMovie = (req, res, next) => {
 const createMovie = (req, res, next) => {
   const {
     country, director, duration, year, description,
-    image, trailerLink, nameRU, nameEN, thumbnail, movieId,
+    image, trailerLink, nameRU, nameEN, thumbnail, id,
   } = req.body;
 
   const owner = req.user._id;
@@ -57,7 +57,7 @@ const createMovie = (req, res, next) => {
     nameRU,
     nameEN,
     thumbnail,
-    movieId,
+    id,
     owner,
   })
     .then((movie) => {
