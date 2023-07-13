@@ -9,6 +9,7 @@ const {
   BadRequestError, ConflictError, NotFoundError,
 } = require('../utils/errors/index');
 const { DEV_KEY } = require('../utils/config');
+const { NONAME } = require('dns');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -87,10 +88,12 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : DEV_KEY, { expiresIn: '7d' });
-
+      console.log(token);
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
+        secure: true,
+        sameSite: 'none',
       });
       res.send({ success: SIGNIN_MESSAGE });
     })
