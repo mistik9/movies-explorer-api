@@ -101,7 +101,12 @@ const login = (req, res, next) => {
 };
 
 const logout = (req, res) => {
-  res.clearCookie('jwt').send({ success: CLEAR_COOKIE_MESSAGE });
+  res.clearCookie('jwt', {
+    sameSite: 'none',
+    httpOnly: true,
+    secure: true,
+  });
+  res.send({ success: CLEAR_COOKIE_MESSAGE });
 };
 
 module.exports = {
