@@ -1,5 +1,6 @@
 const allowedCors = [
   'http://localhost:3001',
+  'http://localhost:3000',
   'https://hollysht.nomoredomains.rocks/api',
   'https://hollysht.nomoredomains.work',
 ];
